@@ -23,8 +23,8 @@ def get_sats_balance(btc_explorer_url,btc_address):
 		logging.info(e)
 		return -1
 
-def address_is_pwned(sats_expected,sats_balance):
-	return sats_balance < sats_expected
+def address_balance_changed(sats_expected,sats_balance):
+	return sats_balance != sats_expected
 
 
 	
@@ -46,6 +46,7 @@ def send_email(from_email,to_email,subject,message,email_user,email_pass,server,
 parser = argparse.ArgumentParser()
 parser.add_argument('-x','--explorer',default='', required=True,help="Bitcoin Explorer URL:port")
 parser.add_argument('-a','--address',default='', required=True,help="Bitcoin address to watch")
+parser.add_argument('-n','--nickname',default='', required=True,help="Bitcoin address nickname")
 parser.add_argument('-s','--sats',type=int, default=0, required=True,help="Expected sats ")
 parser.add_argument('-f','--frm', default='', required=True,help="Email From Address")
 parser.add_argument('-t','--to', default='', required=True,help="Email To")
@@ -56,9 +57,9 @@ parser.add_argument('-o','--port', type=int, default=587, help="SMTP Port")
 args = parser.parse_args()
 sats_balance = get_sats_balance(args.explorer,args.address)
 
-subject = "Address compromised"
-message = "Address compromised, balance is {} sats, check your account!!!".format(sats_balance)
+subject = "Address '{}' balance has changed".format(args.nickname)
+message = "BTC balance is {} sats".format(sats_balance)
 
-if address_is_pwned(args.sats,sats_balance):
+if address_balance_changed(args.sats,sats_balance):
 	send_email(args.frm,args.to,subject,message,args.user,args.psw,args.server,args.port)
 
