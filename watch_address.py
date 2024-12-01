@@ -58,7 +58,7 @@ args = parser.parse_args()
 sats_balance = get_sats_balance(args.explorer,args.address)
 if sats_balance == -1:
 	subject = "Cannot connect to node to check Address '{}'".format(args.nickname)
-	message = "Your BTC Node seeme to be down"
+	message = "Your BTC Node seems to be down"
 else:	
 	subject = "Address '{}' balance has changed".format(args.nickname)
 	message = "BTC balance is {} sats".format(sats_balance)
