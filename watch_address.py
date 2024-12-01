@@ -56,9 +56,12 @@ parser.add_argument('-p','--psw', default='', required=True,help="SMTP Password"
 parser.add_argument('-o','--port', type=int, default=587, help="SMTP Port")
 args = parser.parse_args()
 sats_balance = get_sats_balance(args.explorer,args.address)
-
-subject = "Address '{}' balance has changed".format(args.nickname)
-message = "BTC balance is {} sats".format(sats_balance)
+if sats_balance == -1:
+	subject = "Cannot connect to node to check Address '{}'".format(args.nickname)
+	message = "Your BTC Node seeme to be down"
+else:	
+	subject = "Address '{}' balance has changed".format(args.nickname)
+	message = "BTC balance is {} sats".format(sats_balance)
 
 if address_balance_changed(args.sats,sats_balance):
 	send_email(args.frm,args.to,subject,message,args.user,args.psw,args.server,args.port)
